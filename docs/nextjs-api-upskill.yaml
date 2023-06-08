@@ -1,0 +1,529 @@
+openapi: 3.0.3
+info:
+  title: Next.js Upskill API
+  description: |-
+    This is an API designed for the Next.js Upskill.
+
+    Some useful links:
+    - [Open API editor](https://editor.swagger.io/) - Import this file here to see the GUI for this documentatnion
+  version: 1.0.0
+servers:
+  - url: http://localhost:3000
+tags:
+  - name: products
+    description: API required to handle products
+  - name: user
+    description: API required to handle user
+  - name: orders
+    description: API required to handle orders
+  - name: faq
+    description: API required to handle faq
+  - name: blog
+    description: API required to handle blog
+paths:
+  /products:
+    get:
+      tags:
+        - products
+      summary: Get paginated product list
+      parameters:
+        - name: page
+          in: query
+          description: The page number
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  meta:
+                    type: object
+                    properties: 
+                      page:
+                        type: number
+                        example: 1
+                      perPage:
+                        type: number
+                        example: 9
+                      totalPages:
+                        type: number
+                        example: 7
+                  products:  
+                    type: array
+                    items:
+                      properties:
+                        id:
+                          type: integer
+                          format: int32
+                          example: 1
+                        title:
+                          type: string
+                          example: Fjallraven - Foldsack No. 1 Backpack Fits 15 Laptops
+                        price:
+                          type: number
+                          example: 109.95
+                        description:
+                          type: string
+                          example: Your perfect pack for everyday use and walks in the forest. Stash your laptop (up to 15 inches) in the padded sleeve your everyday
+                        category:
+                          type: string
+                          example: men's clothing
+                        image:
+                          type: string
+                          format: uri
+                          example: https://fakestoreapi.com/img/81fPKd-2AYL._AC_SL1500_.jpg
+                        stock:
+                          type: integer
+                          format: int32
+                          example: 3
+  /products/{productId}:
+    get:
+      tags:
+        - products
+      summary: Get single product
+      parameters:
+        - name: productId
+          in: path
+          description: The id of the product
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  peoductId:
+                    type: integer
+                    format: int32
+                    example: 1
+                  title:
+                    type: string
+                    example: Fjallraven - Foldsack No. 1 Backpack Fits 15 Laptops
+                  price:
+                    type: number
+                    example: 109.95
+                  description:
+                    type: string
+                    example: Your perfect pack for everyday use and walks in the forest. Stash your laptop (up to 15 inches) in the padded sleeve your everyday
+                  category:
+                    type: string
+                    example: men's clothing
+                  image:
+                    type: string
+                    format: uri
+                    example: https://fakestoreapi.com/img/81fPKd-2AYL._AC_SL1500_.jpg
+                  stock:
+                    type: integer
+                    format: int32
+                    example: 3
+  /products/stock:
+    get:
+      tags:
+        - products
+      summary: Get information regarding product availability
+      parameters:
+        - name: productId
+          in: query
+          description: The id of the product
+          required: true
+          schema:
+            type: integer
+            format: int32
+        - name: quantity
+          in: query
+          description: The quantity of requested products
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                oneOf:
+                - $ref: '#/components/schemas/InStock'
+                - $ref: '#/components/schemas/OutOfStock'
+
+  /user/login:
+    post:
+      tags:
+        - user
+      summary: Log the user into the system.
+      requestBody:
+        description: The user's login credentials
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                login:
+                  type: string
+                  description: The user's login username
+                  example: johnsmith
+                password:
+                  type: string
+                  description: The user's login password
+                  example: pasword!Example123
+              required:
+                - login
+                - password
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  userId:
+                    type: integer
+                    format: int32
+                    description: The ID of the authenticated user
+                    example: 15
+                  firstName:
+                    type: string
+                    description: The first name of the authenticated user
+                    example: John
+                  lastName:
+                    type: string
+                    description: The last name of the authenticated user
+                    example: Smith
+                required:
+                  - userId
+                  - firstName
+                  - lastName
+  /user/logout:
+    get:
+      tags:
+        - user
+      summary: Log the user out of the system.
+      parameters:
+        - name: userId
+          in: query
+          description: The id of a speific user
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: Success
+  /user/cart:
+    get:
+      tags:
+        - user
+      summary: Get items from the user's shopping cart.
+      parameters:
+        - name: userId
+          in: query
+          description: The id of a speific user
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: User cart items
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  properties:
+                    productId:
+                      type: integer
+                      format: int32
+                      description: ID of the product to add to the cart
+                      example: 4123
+                    quantity:
+                      type: integer
+                      format: int32
+                      description: Number of units of the product to add to the cart
+                      example: 3
+    post:
+      tags:
+        - user
+      summary: Update user's cart
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                userId:
+                  type: integer
+                  format: int32
+                  description: ID of the user adding items to their cart
+                  example: 15
+                cart:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      productId:
+                        type: integer
+                        format: int32
+                        description: ID of the product to add to the cart
+                        example: 4123
+                      quantity:
+                        type: integer
+                        format: int32
+                        description: Number of units of the product to add to the cart
+                        example: 3
+                    required:
+                      - productId
+                      - quantity
+                  description: Array of items to add to the user's cart
+              required:
+                - userId
+                - cart
+      responses:
+        '200':
+          description: Success
+    delete:
+      tags:
+        - user
+      summary: Clear the user's shopping cart.
+      parameters:
+        - name: userId
+          in: query
+          description: The id of a speific user
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: Success
+  /orders:
+    get:
+      tags:
+        - orders
+      summary: Get all user orders
+      parameters:
+        - name: userId
+          in: query
+          description: The id of a speific user
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: List of user orders
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  properties:
+                    orderId:
+                      type: integer
+                      format: int32
+                      description: ID of the order
+                      example: 4123
+                    userId:
+                      type: integer
+                      format: int32
+                      description: ID of the user
+                      example: 3
+                    date:
+                      type: string
+                      format: date
+                      description: Date of placing the order
+                      example: '2023-02-01'
+                    items:
+                      type: array
+                      items:
+                        properties:
+                          productId:
+                            type: integer
+                            format: int32
+                            description: ID of the product
+                            example: 421
+                          quantity:
+                            type: integer
+                            format: int32
+                            description: Number of ordered units
+                            example: 2
+                          price:
+                            type: number
+                            description: Price of the single unit
+                            example: 19.5
+    post:
+      tags:
+        - orders
+      summary: Add an order for a user
+      requestBody:
+        description: The orders details
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                userId:
+                  type: integer
+                  format: int32
+                  description: ID of the user
+                  example: 3
+                items:
+                  type: array
+                  items:
+                    properties:
+                      productId:
+                        type: integer
+                        format: int32
+                        description: ID of the product
+                        example: 421
+                      quantity:
+                        type: integer
+                        format: int32
+                        description: Number of ordered units
+                        example: 2
+                      price:
+                        type: number
+                        description: Price of the single unit
+                        example: 19.5
+
+      responses:
+        '200':
+          description: Success
+  /faq:
+    get:
+      tags:
+        - faq
+      summary: Get all frequently asked questions.
+      responses:
+        '200':
+          description: Frequently asked questions list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  properties:
+                    faqId:
+                      type: integer
+                      format: int32
+                      description: ID of the faq
+                      example: 5
+                    question:
+                      type: string
+                      description: Question value
+                      example: How to place the order?
+                    answer:
+                      type: string
+                      description: Answer value
+                      example: Click on the Pay button on the checkout page
+  /blog:
+    get:
+      tags:
+        - blog
+      summary: Get a list of all blog posts.
+      responses:
+        '200':
+          description: A list of all blog postst
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  properties:
+                    postId:
+                      type: integer
+                      format: int32
+                      description: ID of the blog post
+                      example: 34
+                    title:
+                      type: string
+                      description: Post title
+                      example: Mauris pellentesque lobortis nisl eu tempus.
+                    slug:
+                      type: string
+                      description: Unique post slug
+                      example: mauris-pellentesque-lobortis-nisl-eu-tempus
+                    author:
+                      type: object
+                      properties: 
+                        name:
+                          type: string
+                          description: Name of the author of the blog post
+                          example: Mauris Pellentesque
+  /blog/{slug}:
+    get:
+      tags:
+        - blog
+      summary: Get the single blog post details.
+      parameters:
+        - name: slug
+          in: path
+          description: The slug of the blog post to retrieve
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The blog post details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  postId:
+                    type: integer
+                    format: int32
+                    description: ID of the blog post
+                    example: 34
+                  title:
+                    type: string
+                    description: Post title
+                    example: Mauris pellentesque lobortis nisl eu tempus.
+                  slug:
+                    type: string
+                    description: Unique post slug
+                    example: mauris-pellentesque-lobortis-nisl-eu-tempus
+                  content:
+                    type: string
+                    description: Blog post content
+                    example: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent eu enim auctor, euismod neque sed, hendrerit eros. Nulla semper consequat molestie. Quisque non ligula accumsan, vestibulum ipsum ac, ultricies ex. Quisque vel pellentesque ex, vel posuere nisi. Aliquam velit sem, pharetra sit amet risus nec, hendrerit dictum arcu. Nulla facilisi. Pellentesque egestas ultricies ligula eget gravida. Aenean laoreet est id nisi commodo, sed scelerisque risus aliquam. Sed vitae interdum ex. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Duis auctor vestibulum velit nec interdum. Duis et placerat libero. Sed at velit fringilla, tempor quam at, feugiat lorem.
+                  createdAt:
+                    type: string
+                    format: date
+                    example: 2023-02-10
+                  author:
+                    type: object
+                    properties: 
+                      name:
+                        type: string
+                        description: Name of the author of the blog post
+                        example: Mauris Pellentesque
+components:
+  schemas:
+    InStock:
+      type: object
+      properties:
+        message:
+          type: string
+          example: "In stock"
+    OutOfStock:
+      type: object
+      properties:
+        message:
+          type: string
+          example: "Out of stock"
