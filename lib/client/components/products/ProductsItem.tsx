@@ -23,12 +23,9 @@ export function ProductsItem({ product }: ProductsItemProps) {
         maxWidth: 345,
       }}
     >
-      <Link
-        href={`/products/${product.productId}`}
-        style={{ textDecoration: 'none' }}
-      >
-        <CardActionArea sx={{ height: '100%', textDecoration: 'none' }}>
-          <CardMedia sx={{ position: 'relative' }}>
+      <Link href={`/products/${product.productId}`}>
+        <CardActionArea>
+          <CardMedia>
             <Image
               priority
               src={product.image}

@@ -8,31 +8,26 @@ export type ProductGridProps = PropsWithChildren<{
 
 export function ProductGrid({ image, children }: ProductGridProps) {
   return (
-    <Box m={3}>
+    <Box
+      my={3}
+      mx={10}
+    >
       <Grid
         container
         spacing={4}
       >
         <Grid
           item
-          xs={1}
-        />
-        <Grid
-          item
-          xs={5}
+          xs={6}
         >
           {image}
         </Grid>
         <Grid
           item
-          xs={5}
+          xs={6}
         >
           {children}
         </Grid>
-        <Grid
-          item
-          xs={1}
-        />
       </Grid>
     </Box>
   );
