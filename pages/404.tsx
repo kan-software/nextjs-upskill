@@ -7,7 +7,7 @@ export default function Custom404() {
       textAlign="center"
     >
       <h1>404 - Page Not Found </h1>
-      <h3>The page doesn't exist</h3>
+      <h3>The page does not exist</h3>
     </Box>
   );
 }
