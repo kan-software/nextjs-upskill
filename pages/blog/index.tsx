@@ -26,8 +26,8 @@ export default function Blog({ blogPosts }: BlogProps) {
   return (
     <BlogGrid>
       {blogPosts.map((blogPost) => (
-        <BlogGridItem key={blogPost.postId}>
-          <Link href={`blog/${blogPost.postId}`}>
+        <BlogGridItem key={blogPost.slug}>
+          <Link href={`blog/${blogPost.slug}`}>
             <Paper elevation={3}>
               <Box
                 py={1}
