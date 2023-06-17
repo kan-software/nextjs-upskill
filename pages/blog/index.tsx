@@ -1,29 +1,28 @@
-import { GetStaticProps, InferGetStaticPropsType } from 'next';
+import { GetStaticProps } from 'next';
 import Link from 'next/link';
 import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
-import { blogData } from '@/lib/server/data/blog';
-import { IBlogPost } from '@/lib/server/models/blog';
 import {
   BlogGrid,
   BlogGridItem,
 } from '@/lib/client/components/blog/Blog.styles';
+import blogService from '@/lib/server/services/blog';
 
-export const getStaticProps: GetStaticProps<{
-  blogPosts: IBlogPost[];
-}> = async () => {
-  // TODO: implement real data fetching
+export type BlogProps = {
+  blogPosts: ReturnType<typeof blogService.getBlogList>;
+};
+
+export const getStaticProps: GetStaticProps<BlogProps> = async () => {
+  const blogPosts = blogService.getBlogList();
   return {
     props: {
-      blogPosts: blogData,
+      blogPosts,
     },
   };
 };
 
-export default function Blog({
-  blogPosts,
-}: InferGetStaticPropsType<typeof getStaticProps>) {
+export default function Blog({ blogPosts }: BlogProps) {
   return (
     <BlogGrid>
       {blogPosts.map((blogPost) => (

@@ -1,28 +1,33 @@
-import type { InferGetServerSidePropsType, GetServerSideProps } from 'next';
+import type { GetServerSideProps } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
-import { IProduct } from '@/lib/server/models/products';
-import { productsData } from '@/lib/server/data/products';
 import { ProductsQuantitySelect } from '@/lib/client/components/shared/ProductsQuantitySelect';
 import { ProductGrid } from '@/lib/client/components/product/Product.styles';
+import productsService from '@/lib/server/services/products';
 
-export const getServerSideProps: GetServerSideProps<{
-  product: IProduct;
-}> = async () => {
-  // TODO: implement real data fetching
-  return {
-    props: {
-      product: productsData[0],
-    },
-  };
+export type ProductProps = {
+  product: ReturnType<typeof productsService.getSingleProduct>;
 };
 
-export default function Product({
-  product,
-}: InferGetServerSidePropsType<typeof getServerSideProps>) {
+export const getServerSideProps: GetServerSideProps<ProductProps> = async ({
+  query,
+}) => {
+  try {
+    const id = query.id as string;
+    const product = productsService.getSingleProduct(+id);
+    return { props: { product } };
+  } catch (e) {
+    if (e instanceof Error && e.message === 'Product not found') {
+      return { notFound: true };
+    }
+    throw e;
+  }
+};
+
+export default function Product({ product }: ProductProps) {
   const handleAddToBasket = () => {
     // TODO: implement add to basket
   };

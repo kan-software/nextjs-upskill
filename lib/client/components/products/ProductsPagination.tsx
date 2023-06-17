@@ -1,26 +1,32 @@
 import { useRouter } from 'next/router';
 import Pagination from '@mui/material/Pagination';
 
-export function ProductsPagination() {
-  // TODO: implement totalPages value for pagination
+export type ProductsPaginationProps = {
+  page: number;
+  totalPages: number;
+};
+
+export function ProductsPagination({
+  page,
+  totalPages,
+}: ProductsPaginationProps) {
   const router = useRouter();
-  const currentPage = router.query.page ? +router.query.page : 1;
 
   const handlePaginationChange = (
     event: React.ChangeEvent<unknown>,
-    page: number
+    newPage: number
   ) => {
     router.push({
       href: router.pathname,
-      query: { ...router.query, page },
+      query: { ...router.query, page: newPage },
     });
   };
 
   return (
     <Pagination
       color="primary"
-      count={10}
-      page={currentPage}
+      count={totalPages}
+      page={page}
       onChange={handlePaginationChange}
     />
   );

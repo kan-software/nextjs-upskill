@@ -1,15 +1,14 @@
 import Link from 'next/link';
-import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
+import Box from '@mui/material/Box';
 
-export default function Custom404() {
+export default function Custom500() {
   return (
     <Box
       mt={16}
       textAlign="center"
     >
-      <h1>404 - Page Not Found </h1>
-      <h3>The page does not exist</h3>
+      <h1>500 - Server-side error occurred</h1>
       <Box mt={2}>
         <Link href="/">
           <Button>Back to products</Button>

@@ -1,6 +1,4 @@
-import type { InferGetServerSidePropsType, GetServerSideProps } from 'next';
-import { IProduct } from '@/lib/server/models/products';
-import { productsData } from '@/lib/server/data/products';
+import type { GetServerSideProps } from 'next';
 import { ProductsItem } from '@/lib/client/components/products/ProductsItem';
 import {
   PaginationContainer,
@@ -8,27 +6,40 @@ import {
   ProductsGridItem,
 } from '@/lib/client/components/products/Products.styles';
 import { ProductsPagination } from '@/lib/client/components/products/ProductsPagination';
+import productsService from '@/lib/server/services/products';
 
-const mockedProducts: IProduct[] = productsData.slice(0, 5);
-
-export const getServerSideProps: GetServerSideProps<{
-  products: IProduct[];
-}> = async () => {
-  // TODO: implement real data fetching
-  return {
-    props: {
-      products: mockedProducts,
-    },
-  };
+export type ProductsProps = {
+  data: ReturnType<typeof productsService.getProducts>;
 };
 
-export default function Products({
-  products,
-}: InferGetServerSidePropsType<typeof getServerSideProps>) {
+export const getServerSideProps: GetServerSideProps<ProductsProps> = async ({
+  query,
+}) => {
+  try {
+    const page = query.page ? +query.page : 1;
+    const data = productsService.getProducts(page);
+    return { props: { data } };
+  } catch (e) {
+    if (e instanceof Error && e.message === 'Products not found') {
+      return { notFound: true };
+    }
+    throw e;
+  }
+};
+
+export default function Products({ data }: ProductsProps) {
+  const {
+    products,
+    meta: { totalPages, page },
+  } = data;
+
   return (
     <>
       <PaginationContainer>
-        <ProductsPagination />
+        <ProductsPagination
+          totalPages={totalPages}
+          page={page}
+        />
       </PaginationContainer>
       <ProductsGrid>
         {products.map((product) => (
