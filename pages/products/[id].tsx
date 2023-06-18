@@ -1,5 +1,6 @@
 import type { GetServerSideProps } from 'next';
 import Image from 'next/image';
+import { QueryClient, dehydrate } from '@tanstack/react-query';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import { ProductsQuantitySelect } from '@/lib/client/components/shared/ProductsQuantitySelect';
@@ -9,18 +10,21 @@ import {
 } from '@/lib/client/components/products/Product.styles';
 import productsService from '@/lib/server/services/products';
 import Link from '@/lib/client/components/shared/Link';
+import { productsKeys, useProduct } from '@/lib/client/queries/products';
 
 export type ProductProps = {
-  product: ReturnType<typeof productsService.getSingleProduct>;
+  id: number;
 };
 
 export const getServerSideProps: GetServerSideProps<ProductProps> = async ({
   query,
 }) => {
   try {
-    const id = query.id as string;
-    const product = productsService.getSingleProduct(+id);
-    return { props: { product } };
+    const queryClient = new QueryClient();
+    const id = +(query.id as string);
+    const product = productsService.getSingleProduct(id);
+    queryClient.setQueryData(productsKeys.single(id), product);
+    return { props: { dehydratedState: dehydrate(queryClient), id } };
   } catch (e) {
     if (e instanceof Error && e.message === 'Product not found') {
       return { notFound: true };
@@ -29,7 +33,10 @@ export const getServerSideProps: GetServerSideProps<ProductProps> = async ({
   }
 };
 
-export default function Product({ product }: ProductProps) {
+export default function Product({ id }: ProductProps) {
+  const { data } = useProduct({ id });
+  const product = data!;
+
   const handleAddToBasket = () => {
     // TODO: implement add to basket
   };

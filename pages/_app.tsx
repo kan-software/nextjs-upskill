@@ -1,6 +1,12 @@
 import '@/styles/globals.css';
+import { useState } from 'react';
 import type { AppProps } from 'next/app';
 import Head from 'next/head';
+import {
+  QueryClient,
+  QueryClientProvider,
+  Hydrate,
+} from '@tanstack/react-query';
 import { CacheProvider, EmotionCache } from '@emotion/react';
 import CssBaseline from '@mui/material/CssBaseline';
 import { ThemeProvider } from '@mui/material/styles';
@@ -20,29 +26,35 @@ export default function MyApp({
   pageProps,
   emotionCache = clientSideEmotionCache,
 }: MyAppProps) {
+  const [queryClient] = useState(() => new QueryClient());
+
   return (
     <CacheProvider value={emotionCache}>
-      <Head>
-        <meta
-          name="description"
-          content="Next.js upskill application"
-        />
-        <meta
-          name="viewport"
-          content="width=device-width, initial-scale=1"
-        />
-        <title>E-commerce</title>
-        <link
-          rel="icon"
-          href="/favicon.ico"
-        />
-      </Head>
-      <ThemeProvider theme={theme}>
-        <CssBaseline />
-        <Layout>
-          <Component {...pageProps} />
-        </Layout>
-      </ThemeProvider>
+      <QueryClientProvider client={queryClient}>
+        <Hydrate state={pageProps.dehydratedState}>
+          <Head>
+            <meta
+              name="description"
+              content="Next.js upskill application"
+            />
+            <meta
+              name="viewport"
+              content="width=device-width, initial-scale=1"
+            />
+            <title>E-commerce</title>
+            <link
+              rel="icon"
+              href="/favicon.ico"
+            />
+          </Head>
+          <ThemeProvider theme={theme}>
+            <CssBaseline />
+            <Layout>
+              <Component {...pageProps} />
+            </Layout>
+          </ThemeProvider>
+        </Hydrate>
+      </QueryClientProvider>
     </CacheProvider>
   );
 }

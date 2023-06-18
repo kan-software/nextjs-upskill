@@ -1,4 +1,5 @@
 import type { GetServerSideProps } from 'next';
+import { dehydrate, QueryClient } from '@tanstack/react-query';
 import { ProductsItem } from '@/lib/client/components/products/ProductsItem';
 import {
   PaginationContainer,
@@ -7,18 +8,26 @@ import {
 } from '@/lib/client/components/products/Products.styles';
 import { ProductsPagination } from '@/lib/client/components/products/ProductsPagination';
 import productsService from '@/lib/server/services/products';
+import { productsKeys, useProducts } from '@/lib/client/queries/products';
 
 export type ProductsProps = {
-  data: ReturnType<typeof productsService.getProducts>;
+  page: number;
 };
 
 export const getServerSideProps: GetServerSideProps<ProductsProps> = async ({
   query,
 }) => {
   try {
+    const queryClient = new QueryClient();
     const page = query.page ? +query.page : 1;
     const data = productsService.getProducts(page);
-    return { props: { data } };
+    queryClient.setQueryData(productsKeys.all, data);
+    return {
+      props: {
+        dehydratedState: dehydrate(queryClient),
+        page,
+      },
+    };
   } catch (e) {
     if (e instanceof Error && e.message === 'Products not found') {
       return { notFound: true };
@@ -27,11 +36,13 @@ export const getServerSideProps: GetServerSideProps<ProductsProps> = async ({
   }
 };
 
-export default function Products({ data }: ProductsProps) {
+export default function Products({ page }: ProductsProps) {
+  const { data } = useProducts({ page });
+
   const {
     products,
-    meta: { totalPages, page },
-  } = data;
+    meta: { totalPages },
+  } = data!;
 
   return (
     <>
