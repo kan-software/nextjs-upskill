@@ -1,8 +1,7 @@
 import { GetStaticProps } from 'next';
-import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
-import Paper from '@mui/material/Paper';
 import faqService from '@/lib/server/services/faq';
+import { FaqContainer, FaqItem } from '@/lib/client/components/faq/Faq.styles';
 
 export type FaqProps = {
   faqItems: ReturnType<typeof faqService.getFaqList>;
@@ -19,31 +18,18 @@ export const getStaticProps: GetStaticProps<FaqProps> = async () => {
 
 export default function Faq({ faqItems }: FaqProps) {
   return (
-    <Box
-      my={4}
-      mx={20}
-    >
+    <FaqContainer>
       {faqItems.map((faqItem) => (
-        <Box
-          key={faqItem.faqId}
-          my={3}
-        >
-          <Paper elevation={3}>
-            <Box
-              p={2}
-              minHeight={150}
-            >
-              <Typography
-                variant="h5"
-                gutterBottom
-              >
-                {faqItem.question}
-              </Typography>
-              <Typography>{faqItem.answer}</Typography>
-            </Box>
-          </Paper>
-        </Box>
+        <FaqItem key={faqItem.faqId}>
+          <Typography
+            variant="h5"
+            gutterBottom
+          >
+            {faqItem.question}
+          </Typography>
+          <Typography>{faqItem.answer}</Typography>
+        </FaqItem>
       ))}
-    </Box>
+    </FaqContainer>
   );
 }

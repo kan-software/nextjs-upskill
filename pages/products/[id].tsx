@@ -1,12 +1,14 @@
 import type { GetServerSideProps } from 'next';
 import Image from 'next/image';
-import Link from 'next/link';
-import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import { ProductsQuantitySelect } from '@/lib/client/components/shared/ProductsQuantitySelect';
-import { ProductGrid } from '@/lib/client/components/product/Product.styles';
+import {
+  ProductAddToBasketContainer,
+  ProductGrid,
+} from '@/lib/client/components/products/Product.styles';
 import productsService from '@/lib/server/services/products';
+import Link from '@/lib/client/components/shared/Link';
 
 export type ProductProps = {
   product: ReturnType<typeof productsService.getSingleProduct>;
@@ -45,9 +47,12 @@ export default function Product({ product }: ProductProps) {
         />
       }
     >
-      <Link href="/">
-        <Button>Back to products</Button>
-      </Link>
+      <Button
+        component={Link}
+        href="/"
+      >
+        Back to products
+      </Button>
       <Typography
         mt={5}
         variant="h5"
@@ -67,23 +72,16 @@ export default function Product({ product }: ProductProps) {
       </Typography>
       <Typography mt={5}>{product.description}</Typography>
       {product.stock > 0 && (
-        <Box
-          mt={5}
-          display="flex"
-          justifyContent="center"
-          alignItems="center"
-        >
+        <ProductAddToBasketContainer>
           <ProductsQuantitySelect stock={product.stock} />
-          <Box>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={handleAddToBasket}
-            >
-              Add to basket
-            </Button>
-          </Box>
-        </Box>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handleAddToBasket}
+          >
+            Add to basket
+          </Button>
+        </ProductAddToBasketContainer>
       )}
     </ProductGrid>
   );

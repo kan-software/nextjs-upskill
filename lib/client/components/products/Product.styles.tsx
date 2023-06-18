@@ -32,3 +32,16 @@ export function ProductGrid({ image, children }: ProductGridProps) {
     </Box>
   );
 }
+
+export function ProductAddToBasketContainer({ children }: PropsWithChildren) {
+  return (
+    <Box
+      mt={5}
+      display="flex"
+      justifyContent="center"
+      alignItems="center"
+    >
+      {children}
+    </Box>
+  );
+}

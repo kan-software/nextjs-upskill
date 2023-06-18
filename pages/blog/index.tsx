@@ -1,11 +1,9 @@
 import { GetStaticProps } from 'next';
-import Link from 'next/link';
-import Paper from '@mui/material/Paper';
-import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import {
   BlogGrid,
   BlogGridItem,
+  BlogPostItem,
 } from '@/lib/client/components/blog/Blog.styles';
 import blogService from '@/lib/server/services/blog';
 
@@ -26,22 +24,14 @@ export default function Blog({ blogPosts }: BlogProps) {
   return (
     <BlogGrid>
       {blogPosts.map((blogPost) => (
-        <BlogGridItem key={blogPost.slug}>
-          <Link href={`blog/${blogPost.slug}`}>
-            <Paper elevation={3}>
-              <Box
-                py={1}
-                px={2}
-                minHeight={150}
-                display="flex"
-                flexDirection="column"
-                justifyContent="space-between"
-              >
-                <Typography variant="h6">{blogPost.title}</Typography>
-                <Typography>author: {blogPost.author.name}</Typography>
-              </Box>
-            </Paper>
-          </Link>
+        <BlogGridItem
+          key={blogPost.slug}
+          href={`blog/${blogPost.slug}`}
+        >
+          <BlogPostItem>
+            <Typography variant="h6">{blogPost.title}</Typography>
+            <Typography>author: {blogPost.author.name}</Typography>
+          </BlogPostItem>
         </BlogGridItem>
       ))}
     </BlogGrid>

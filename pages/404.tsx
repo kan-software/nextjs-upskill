@@ -1,20 +1,23 @@
-import Link from 'next/link';
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
+import Typography from '@mui/material/Typography';
+import { ErrorContainer } from '@/lib/client/components/error/Error.styles';
+import Link from '@/lib/client/components/shared/Link';
 
 export default function Custom404() {
   return (
-    <Box
-      mt={16}
-      textAlign="center"
-    >
-      <h1>404 - Page Not Found </h1>
-      <h3>The page does not exist</h3>
-      <Box mt={2}>
-        <Link href="/">
-          <Button>Back to products</Button>
-        </Link>
-      </Box>
-    </Box>
+    <ErrorContainer>
+      <Typography
+        variant="h4"
+        gutterBottom
+      >
+        404 - Page Not Found
+      </Typography>
+      <Typography
+        variant="h6"
+        gutterBottom
+      >
+        The page does not exist
+      </Typography>
+      <Link href="/">Back to products</Link>
+    </ErrorContainer>
   );
 }

@@ -1,8 +1,8 @@
 import { PropsWithChildren } from 'react';
-import Link from 'next/link';
 import { useRouter } from 'next/router';
 import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
+import Link from '../Link';
 
 export type NavLinkButtonProps = PropsWithChildren<{
   href: string;
@@ -13,16 +13,16 @@ export function NavLinkButton({ href, children }: NavLinkButtonProps) {
   const isPageActive = (page: string) => router.pathname === page;
 
   return (
-    <Link href={href}>
-      <Button
-        sx={{ color: 'primary.contrastText' }}
-        {...(isPageActive(href)
-          ? { variant: 'contained', color: 'secondary' }
-          : {})}
-      >
-        {children}
-      </Button>
-    </Link>
+    <Button
+      component={Link}
+      href={href}
+      sx={{ color: 'primary.contrastText' }}
+      {...(isPageActive(href)
+        ? { variant: 'contained', color: 'secondary' }
+        : {})}
+    >
+      {children}
+    </Button>
   );
 }
 

@@ -1,19 +1,17 @@
-import Link from 'next/link';
-import Button from '@mui/material/Button';
-import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
+import { ErrorContainer } from '@/lib/client/components/error/Error.styles';
+import Link from '@/lib/client/components/shared/Link';
 
 export default function Custom500() {
   return (
-    <Box
-      mt={16}
-      textAlign="center"
-    >
-      <h1>500 - Server-side error occurred</h1>
-      <Box mt={2}>
-        <Link href="/">
-          <Button>Back to products</Button>
-        </Link>
-      </Box>
-    </Box>
+    <ErrorContainer>
+      <Typography
+        variant="h4"
+        gutterBottom
+      >
+        500 - Server-side error occurred
+      </Typography>
+      <Link href="/">Back to products</Link>
+    </ErrorContainer>
   );
 }
