@@ -1,11 +1,27 @@
 import '@/styles/globals.css';
 import type { AppProps } from 'next/app';
 import Head from 'next/head';
+import { CacheProvider, EmotionCache } from '@emotion/react';
+import CssBaseline from '@mui/material/CssBaseline';
+import { ThemeProvider } from '@mui/material/styles';
 import { Layout } from '@/lib/client/components/shared/Layout';
+import theme from '@/lib/client/utils/theme';
+import createEmotionCache from '@/lib/client/utils/createEmotionCache';
 
-export default function App({ Component, pageProps }: AppProps) {
+// Client-side cache, shared for the whole session of the user in the browser.
+const clientSideEmotionCache = createEmotionCache();
+
+export type MyAppProps = AppProps & {
+  emotionCache?: EmotionCache;
+};
+
+export default function MyApp({
+  Component,
+  pageProps,
+  emotionCache = clientSideEmotionCache,
+}: MyAppProps) {
   return (
-    <>
+    <CacheProvider value={emotionCache}>
       <Head>
         <meta
           name="description"
@@ -21,9 +37,12 @@ export default function App({ Component, pageProps }: AppProps) {
           href="/favicon.ico"
         />
       </Head>
-      <Layout>
-        <Component {...pageProps} />
-      </Layout>
-    </>
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <Layout>
+          <Component {...pageProps} />
+        </Layout>
+      </ThemeProvider>
+    </CacheProvider>
   );
 }
