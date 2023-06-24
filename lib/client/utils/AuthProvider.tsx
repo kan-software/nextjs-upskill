@@ -1,4 +1,3 @@
-import { IUser } from '@/lib/server/models/user';
 import {
   PropsWithChildren,
   createContext,
@@ -6,13 +5,13 @@ import {
   useEffect,
   useState,
 } from 'react';
-
-export type ClientUser = Omit<IUser, 'password'>;
+import { ClientUser } from '../models/user';
 
 export type AuthProviderValue = {
   isLoggedIn: () => boolean;
   getUser: () => ClientUser | null;
   setUser: (userData: ClientUser) => void;
+  resetUser: () => void;
 };
 
 const isUserData = (user: any): user is ClientUser =>
@@ -36,6 +35,11 @@ export function AuthProvider({ children }: PropsWithChildren) {
     setUserData(newUser);
   };
 
+  const resetUser = () => {
+    localStorage.removeItem(userDataKey);
+    setUserData(null);
+  };
+
   const restoreUserData = () => {
     const stringifiedUserData = localStorage.getItem(userDataKey);
     if (stringifiedUserData) {
@@ -51,7 +55,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ isLoggedIn, getUser, setUser }}>
+    <AuthContext.Provider value={{ isLoggedIn, getUser, setUser, resetUser }}>
       {children}
     </AuthContext.Provider>
   );

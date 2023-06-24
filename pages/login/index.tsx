@@ -7,7 +7,8 @@ import {
   FormField,
   LoginForm,
 } from '@/lib/client/components/login/Login.styles';
-import { LoginData, useLogin } from '@/lib/client/mutations/login';
+import { useLogin } from '@/lib/client/mutations/user';
+import { LoginData } from '@/lib/client/models/user';
 
 export default function Login() {
   const loginMutation = useLogin();

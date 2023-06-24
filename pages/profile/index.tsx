@@ -7,6 +7,7 @@ import {
 } from '@/lib/client/components/profile/Profile.styles';
 import { useAuth } from '@/lib/client/utils/AuthProvider';
 import userService from '@/lib/server/services/user';
+import { useLogout } from '@/lib/client/mutations/user';
 
 export const getServerSideProps: GetServerSideProps = async () => {
   const isUserLoggedIn = userService.isUserLoggedIn();
@@ -28,40 +29,50 @@ export const getServerSideProps: GetServerSideProps = async () => {
 export default function Profile() {
   const { getUser } = useAuth();
   const user = getUser();
+  const logoutMutation = useLogout();
 
   const handleLogout = () => {
-    // TODO: implement handle logout
+    logoutMutation.mutate(user!.userId);
   };
 
   return (
     <ProfileContainer>
+      {logoutMutation.isError && (
+        <Typography
+          textAlign="center"
+          color="error"
+          gutterBottom
+        >
+          Something went wrong!
+        </Typography>
+      )}
       <Typography
         variant="h4"
         gutterBottom
       >
         Account
       </Typography>
-      <UserDataContainer>
-        {user ? (
-          <>
+      {user ? (
+        <>
+          <UserDataContainer>
             <Typography gutterBottom>
               Name: {`${user.firstName} ${user.lastName}`}
             </Typography>
             <Typography gutterBottom>Login: {user.login}</Typography>
-          </>
-        ) : (
-          <Typography>Loading...</Typography>
-        )}
-      </UserDataContainer>
-      <Button
-        fullWidth
-        type="submit"
-        size="large"
-        variant="contained"
-        onClick={handleLogout}
-      >
-        Logout
-      </Button>
+          </UserDataContainer>
+          <Button
+            fullWidth
+            type="submit"
+            size="large"
+            variant="contained"
+            onClick={handleLogout}
+          >
+            Logout
+          </Button>
+        </>
+      ) : (
+        <Typography>Loading...</Typography>
+      )}
     </ProfileContainer>
   );
 }
