@@ -1,7 +1,7 @@
 import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
-import { User, useAuth } from '@/lib/client/utils/AuthProvider';
 import { useRouter } from 'next/router';
+import { ClientUser, useAuth } from '@/lib/client/utils/AuthProvider';
 
 export type LoginData = {
   login: string;
@@ -14,11 +14,14 @@ export function useLogin() {
 
   return useMutation({
     mutationFn: async ({ login, password }: LoginData) => {
-      const response = await axios.post<User>('/api/user/login', {
-        login,
-        password,
-      });
-      return response.data;
+      const response = await axios.post<Omit<ClientUser, 'login'>>(
+        '/api/user/login',
+        {
+          login,
+          password,
+        }
+      );
+      return { ...response.data, login };
     },
     onSuccess: (user) => {
       setUser(user);

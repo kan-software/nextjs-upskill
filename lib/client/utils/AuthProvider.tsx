@@ -1,3 +1,4 @@
+import { IUser } from '@/lib/server/models/user';
 import {
   PropsWithChildren,
   createContext,
@@ -6,19 +7,15 @@ import {
   useState,
 } from 'react';
 
-export type User = {
-  userId: number;
-  firstName: string;
-  lastName: string;
-};
+export type ClientUser = Omit<IUser, 'password'>;
 
 export type AuthProviderValue = {
   isLoggedIn: () => boolean;
-  getUser: () => User | null;
-  setUser: (userData: User) => void;
+  getUser: () => ClientUser | null;
+  setUser: (userData: ClientUser) => void;
 };
 
-const isUserData = (user: any): user is User =>
+const isUserData = (user: any): user is ClientUser =>
   typeof user.userId === 'number' &&
   typeof user.firstName === 'string' &&
   typeof user.lastName === 'string';
@@ -28,13 +25,13 @@ const AuthContext = createContext<AuthProviderValue | null>(null);
 const userDataKey = 'userData';
 
 export function AuthProvider({ children }: PropsWithChildren) {
-  const [userData, setUserData] = useState<User | null>(null);
+  const [userData, setUserData] = useState<ClientUser | null>(null);
 
   const isLoggedIn = () => Boolean(userData);
 
   const getUser = () => userData;
 
-  const setUser = (newUser: User) => {
+  const setUser = (newUser: ClientUser) => {
     localStorage.setItem(userDataKey, JSON.stringify(newUser));
     setUserData(newUser);
   };
