@@ -1,19 +1,47 @@
+import { FormEventHandler } from 'react';
+import { AxiosError } from 'axios';
 import Typography from '@mui/material/Typography';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import {
   FormField,
-  SignInForm,
-} from '@/lib/client/components/login/SignIn.styles';
+  LoginForm,
+} from '@/lib/client/components/login/Login.styles';
+import { LoginData, useLogin } from '@/lib/client/mutations/login';
 
 export default function Login() {
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const loginMutation = useLogin();
+
+  const handleSubmit: FormEventHandler<HTMLFormElement> = (e) => {
     e.preventDefault();
-    // TODO: implement auth
+    const loginData = getLoginData(e.target as HTMLFormElement);
+    loginMutation.mutate(loginData);
+  };
+
+  const getLoginData = (formElement: HTMLFormElement): LoginData => {
+    const data = new FormData(formElement);
+    const login = data.get('login') as string;
+    const password = data.get('password') as string;
+    return { login, password };
+  };
+
+  const getErrorMessage = (error: unknown) => {
+    if (error instanceof AxiosError) {
+      return error.response?.data.message;
+    }
   };
 
   return (
-    <SignInForm onSubmit={handleSubmit}>
+    <LoginForm onSubmit={handleSubmit}>
+      {loginMutation.isError && (
+        <Typography
+          textAlign="center"
+          color="error"
+          gutterBottom
+        >
+          {getErrorMessage(loginMutation.error) || 'Something went wrong!'}
+        </Typography>
+      )}
       <Typography
         textAlign="center"
         variant="h4"
@@ -24,8 +52,8 @@ export default function Login() {
       <FormField>
         <TextField
           required
-          name="email"
-          label="Email"
+          name="login"
+          label="Login"
           fullWidth
         />
       </FormField>
@@ -46,6 +74,6 @@ export default function Login() {
       >
         Sign in
       </Button>
-    </SignInForm>
+    </LoginForm>
   );
 }

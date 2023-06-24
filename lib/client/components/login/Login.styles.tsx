@@ -1,11 +1,11 @@
 import Box from '@mui/material/Box';
-import { PropsWithChildren } from 'react';
+import { FormEventHandler, PropsWithChildren } from 'react';
 
-export type SignInFormProps = PropsWithChildren<{
-  onSubmit: (event: React.FormEvent<HTMLFormElement>) => void;
+export type LoginFormProps = PropsWithChildren<{
+  onSubmit: FormEventHandler<HTMLFormElement>;
 }>;
 
-export function SignInForm({ children, onSubmit }: SignInFormProps) {
+export function LoginForm({ children, onSubmit }: LoginFormProps) {
   return (
     <Box
       maxWidth={300}

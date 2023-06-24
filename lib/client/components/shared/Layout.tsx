@@ -3,9 +3,13 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import LockOpenIcon from '@mui/icons-material/LockOpen';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import { useAuth } from '../../utils/AuthProvider';
 import { NavLinkButton, NavLinkIconButton } from './layout/NavLink';
 
 export function Layout({ children }: React.PropsWithChildren) {
+  const { isLoggedIn } = useAuth();
+
   return (
     <>
       <AppBar position="static">
@@ -26,12 +30,21 @@ export function Layout({ children }: React.PropsWithChildren) {
           >
             <ShoppingCartIcon />
           </NavLinkIconButton>
-          <NavLinkIconButton
-            href="/login"
-            label="login"
-          >
-            <LockOpenIcon />
-          </NavLinkIconButton>
+          {isLoggedIn() ? (
+            <NavLinkIconButton
+              href="/profile"
+              label="profile"
+            >
+              <AccountCircleIcon />
+            </NavLinkIconButton>
+          ) : (
+            <NavLinkIconButton
+              href="/login"
+              label="login"
+            >
+              <LockOpenIcon />
+            </NavLinkIconButton>
+          )}
         </Toolbar>
       </AppBar>
       <main>{children}</main>

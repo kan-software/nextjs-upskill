@@ -13,6 +13,7 @@ import { ThemeProvider } from '@mui/material/styles';
 import { Layout } from '@/lib/client/components/shared/Layout';
 import theme from '@/lib/client/utils/theme';
 import createEmotionCache from '@/lib/client/utils/createEmotionCache';
+import { AuthProvider } from '@/lib/client/utils/AuthProvider';
 
 // Client-side cache, shared for the whole session of the user in the browser.
 const clientSideEmotionCache = createEmotionCache();
@@ -49,9 +50,11 @@ export default function MyApp({
           </Head>
           <ThemeProvider theme={theme}>
             <CssBaseline />
-            <Layout>
-              <Component {...pageProps} />
-            </Layout>
+            <AuthProvider>
+              <Layout>
+                <Component {...pageProps} />
+              </Layout>
+            </AuthProvider>
           </ThemeProvider>
         </Hydrate>
       </QueryClientProvider>
