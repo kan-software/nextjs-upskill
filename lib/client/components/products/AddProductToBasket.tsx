@@ -12,7 +12,7 @@ export type AddProductToBasketProps = {
 };
 
 export function AddProductToBasket({ product }: AddProductToBasketProps) {
-  const { updateCart, getCartItemByProductId } = useCart();
+  const { updateCart, getCartItemByProductId, removeCartItem } = useCart();
   const cartItem = getCartItemByProductId(product.productId);
   const [quantity, setQuantity] = useState(1);
 
@@ -28,7 +28,9 @@ export function AddProductToBasket({ product }: AddProductToBasketProps) {
   };
 
   const handleDelete = () => {
-    // TODO: handle delete from cart
+    if (cartItem) {
+      removeCartItem(cartItem.productId);
+    }
   };
 
   const updateQuantityFromCart = () => {
@@ -39,6 +41,7 @@ export function AddProductToBasket({ product }: AddProductToBasketProps) {
 
   useEffect(() => {
     updateQuantityFromCart();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cartItem]);
 
   return product.stock > 0 ? (
