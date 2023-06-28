@@ -80,7 +80,7 @@ export default function Product({ id }: ProductProps) {
       <Typography mt={5}>{product.description}</Typography>
       {product.stock > 0 && (
         <ProductAddToBasketContainer>
-          <ProductsQuantitySelect stock={product.stock} />
+          <ProductsQuantitySelect quantity={product.stock} />
           <Button
             variant="contained"
             color="primary"

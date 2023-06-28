@@ -1,13 +1,13 @@
-import Button from "@mui/material/Button";
-import { CartProduct } from "@/lib/client/models/cart";
-import { productsData } from "@/lib/server/data/products";
-import Link from "@/lib/client/components/shared/Link";
+import Button from '@mui/material/Button';
+import { CartProduct } from '@/lib/client/models/cart';
+import { productsData } from '@/lib/server/data/products';
+import Link from '@/lib/client/components/shared/Link';
 import {
   CartContainer,
   CartGrid,
-} from "@/lib/client/components/cart/Cart.styles";
-import { CartSummary } from "@/lib/client/components/cart/CartSummary";
-import { CartProductItem } from "@/lib/client/components/cart/CartProductItem";
+} from '@/lib/client/components/cart/Cart.styles';
+import { CartSummary } from '@/lib/client/components/cart/CartSummary';
+import { CartProductItem } from '@/lib/client/components/cart/CartProductItem';
 
 const cartProducts: CartProduct[] = [
   {
@@ -23,7 +23,10 @@ const cartProducts: CartProduct[] = [
 export default function Cart() {
   return (
     <CartContainer>
-      <Button component={Link} href="/">
+      <Button
+        component={Link}
+        href="/"
+      >
         Back
       </Button>
       <CartGrid summary={<CartSummary cartProducts={cartProducts} />}>

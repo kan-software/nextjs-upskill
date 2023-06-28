@@ -3,11 +3,15 @@ import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
 
 export type ProductsQuantitySelectProps = {
-  stock: number;
+  quantity: number;
 };
 
-export function ProductsQuantitySelect({ stock }: ProductsQuantitySelectProps) {
-  const stockValues = Array.from(Array(stock).keys()).map((index) => index + 1);
+export function ProductsQuantitySelect({
+  quantity,
+}: ProductsQuantitySelectProps) {
+  const quantityValues = Array.from(Array(quantity).keys()).map(
+    (index) => index + 1
+  );
 
   return (
     <FormControl
@@ -15,7 +19,7 @@ export function ProductsQuantitySelect({ stock }: ProductsQuantitySelectProps) {
       size="small"
     >
       <Select defaultValue={1}>
-        {stockValues.map((value) => (
+        {quantityValues.map((value) => (
           <MenuItem
             key={value}
             value={value}

@@ -59,7 +59,7 @@ export function ProductsItem({ product }: ProductsItemProps) {
       <CardActions>
         {product.stock > 0 ? (
           <>
-            <ProductsQuantitySelect stock={product.stock} />
+            <ProductsQuantitySelect quantity={product.stock} />
             <Button
               variant="contained"
               color="primary"
