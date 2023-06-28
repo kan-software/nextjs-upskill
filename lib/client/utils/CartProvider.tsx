@@ -11,6 +11,7 @@ const isCartItem = (cartItem: any) =>
 
 export type CartProviderValue = {
   updateCart: (cartItem: ICartItem) => void;
+  getCartItemByProductId: (productId: number) => ICartItem | null;
 };
 
 const CartContext = createContext<CartProviderValue | null>(null);
@@ -19,27 +20,26 @@ const updateCartItemKey = 'updateCartItem';
 export function CartProvider({ children }: PropsWithChildren) {
   const router = useRouter();
   const { isLoggedIn, getUser } = useAuth();
-  const { data } = useCartItems();
+  const { data: currentCart } = useCartItems();
   const updateCartMutation = useUpdateCart();
   const loggedIn = isLoggedIn();
 
-  const getUpdatedCartItems = (cartItem: ICartItem) => {
-    if (data) {
-      const currentCart = [...data];
-      const currentCartItemIndex = data.findIndex(
-        (item) => item.productId === cartItem.productId
+  const getUpdatedCartItems = (newCartItem: ICartItem) => {
+    if (currentCart) {
+      const currentCartItemIndex = currentCart.findIndex(
+        (item) => item.productId === newCartItem.productId
       );
 
       if (currentCartItemIndex === -1) {
-        currentCart.push(cartItem);
+        return [...currentCart, newCartItem];
       } else {
-        currentCart[currentCartItemIndex] = cartItem;
+        return currentCart.map((currentItem, index) =>
+          index == currentCartItemIndex ? newCartItem : currentItem
+        );
       }
-
-      return currentCart;
     }
 
-    return [cartItem];
+    return [newCartItem];
   };
 
   const updateCartRequest = (cartItem: ICartItem) => {
@@ -79,12 +79,18 @@ export function CartProvider({ children }: PropsWithChildren) {
     }
   };
 
+  const getCartItemByProductId = (productId: number) => {
+    return (
+      currentCart?.find((cartItem) => cartItem.productId === productId) ?? null
+    );
+  };
+
   useEffect(() => {
     restoreUpdateCart();
   }, [loggedIn]);
 
   return (
-    <CartContext.Provider value={{ updateCart }}>
+    <CartContext.Provider value={{ updateCart, getCartItemByProductId }}>
       {children}
     </CartContext.Provider>
   );

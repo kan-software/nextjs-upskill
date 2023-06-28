@@ -1,10 +1,8 @@
-import { useState } from 'react';
 import type { GetServerSideProps } from 'next';
 import Image from 'next/image';
 import { QueryClient, dehydrate } from '@tanstack/react-query';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
-import { ProductsQuantitySelect } from '@/lib/client/components/shared/ProductsQuantitySelect';
 import {
   ProductAddToBasketContainer,
   ProductGrid,
@@ -12,7 +10,7 @@ import {
 import productsService from '@/lib/server/services/products';
 import Link from '@/lib/client/components/shared/Link';
 import { productsKeys, useProduct } from '@/lib/client/queries/products';
-import { useCart } from '@/lib/client/utils/CartProvider';
+import { AddProductToBasket } from '@/lib/client/components/products/AddProductToBasket';
 
 export type ProductProps = {
   id: number;
@@ -36,14 +34,8 @@ export const getServerSideProps: GetServerSideProps<ProductProps> = async ({
 };
 
 export default function Product({ id }: ProductProps) {
-  const [quantity, setQuantity] = useState(1);
-  const { updateCart } = useCart();
   const { data } = useProduct({ id });
   const product = data!;
-
-  const handleUpdateCart = () => {
-    updateCart({ productId: product.productId, quantity });
-  };
 
   return (
     <ProductGrid
@@ -78,26 +70,10 @@ export default function Product({ id }: ProductProps) {
       >
         Price: {product.price}
       </Typography>
-      <Typography textAlign="center">
-        {product.stock > 0 ? 'In stock' : 'Out of stock'}
-      </Typography>
       <Typography mt={5}>{product.description}</Typography>
-      {product.stock > 0 && (
-        <ProductAddToBasketContainer>
-          <ProductsQuantitySelect
-            value={quantity}
-            stock={product.stock}
-            onChange={setQuantity}
-          />
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={handleUpdateCart}
-          >
-            Add to basket
-          </Button>
-        </ProductAddToBasketContainer>
-      )}
+      <ProductAddToBasketContainer>
+        <AddProductToBasket product={product} />
+      </ProductAddToBasketContainer>
     </ProductGrid>
   );
 }
