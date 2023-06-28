@@ -14,6 +14,7 @@ import { Layout } from '@/lib/client/components/shared/Layout';
 import theme from '@/lib/client/utils/theme';
 import createEmotionCache from '@/lib/client/utils/createEmotionCache';
 import { AuthProvider } from '@/lib/client/utils/AuthProvider';
+import { CartProvider } from '@/lib/client/utils/CartProvider';
 
 // Client-side cache, shared for the whole session of the user in the browser.
 const clientSideEmotionCache = createEmotionCache();
@@ -51,9 +52,11 @@ export default function MyApp({
           <ThemeProvider theme={theme}>
             <CssBaseline />
             <AuthProvider>
-              <Layout>
-                <Component {...pageProps} />
-              </Layout>
+              <CartProvider>
+                <Layout>
+                  <Component {...pageProps} />
+                </Layout>
+              </CartProvider>
             </AuthProvider>
           </ThemeProvider>
         </Hydrate>

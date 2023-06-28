@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import Image from 'next/image';
 import Typography from '@mui/material/Typography';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -8,16 +9,24 @@ import {
   CartProductContainer,
   ProductsQuantityContainer,
 } from '@/lib/client/components/cart/Cart.styles';
+import { useCart } from '../../utils/CartProvider';
 
 export type CartProductItemProps = {
   cartProduct: CartProduct;
 };
 
 export function CartProductItem({ cartProduct }: CartProductItemProps) {
-  const { product, quantity } = cartProduct;
+  const [quantity, setQuantity] = useState(cartProduct.quantity);
+  const { updateCart } = useCart();
+  const { product } = cartProduct;
 
   const handleDelete = () => {
     // TODO: implement delete
+  };
+
+  const handleChangeQuantity = (newQuantity: number) => {
+    setQuantity(newQuantity);
+    updateCart({ productId: product.productId, quantity: newQuantity });
   };
 
   return (
@@ -42,7 +51,11 @@ export function CartProductItem({ cartProduct }: CartProductItemProps) {
       </Typography>
       <Typography mb={2}>Price: {product.price}$</Typography>
       <ProductsQuantityContainer>
-        <ProductsQuantitySelect quantity={quantity} />
+        <ProductsQuantitySelect
+          value={quantity}
+          stock={product.stock}
+          onChange={handleChangeQuantity}
+        />
         <IconButton
           aria-label="delete cart product"
           onClick={handleDelete}

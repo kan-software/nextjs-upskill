@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import type { GetServerSideProps } from 'next';
 import Image from 'next/image';
 import { QueryClient, dehydrate } from '@tanstack/react-query';
@@ -11,6 +12,7 @@ import {
 import productsService from '@/lib/server/services/products';
 import Link from '@/lib/client/components/shared/Link';
 import { productsKeys, useProduct } from '@/lib/client/queries/products';
+import { useCart } from '@/lib/client/utils/CartProvider';
 
 export type ProductProps = {
   id: number;
@@ -34,11 +36,13 @@ export const getServerSideProps: GetServerSideProps<ProductProps> = async ({
 };
 
 export default function Product({ id }: ProductProps) {
+  const [quantity, setQuantity] = useState(1);
+  const { updateCart } = useCart();
   const { data } = useProduct({ id });
   const product = data!;
 
-  const handleAddToBasket = () => {
-    // TODO: implement add to basket
+  const handleUpdateCart = () => {
+    updateCart({ productId: product.productId, quantity });
   };
 
   return (
@@ -80,11 +84,15 @@ export default function Product({ id }: ProductProps) {
       <Typography mt={5}>{product.description}</Typography>
       {product.stock > 0 && (
         <ProductAddToBasketContainer>
-          <ProductsQuantitySelect quantity={product.stock} />
+          <ProductsQuantitySelect
+            value={quantity}
+            stock={product.stock}
+            onChange={setQuantity}
+          />
           <Button
             variant="contained"
             color="primary"
-            onClick={handleAddToBasket}
+            onClick={handleUpdateCart}
           >
             Add to basket
           </Button>

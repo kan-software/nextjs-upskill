@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
@@ -9,14 +10,18 @@ import CardActions from '@mui/material/CardActions';
 import { IProduct } from '@/lib/server/models/products';
 import { ProductsQuantitySelect } from '../shared/ProductsQuantitySelect';
 import Link from '../shared/Link';
+import { useCart } from '../../utils/CartProvider';
 
 export type ProductsItemProps = {
   product: IProduct;
 };
 
 export function ProductsItem({ product }: ProductsItemProps) {
-  const handleAddToBasket = () => {
-    // TODO: implement add to basket
+  const [quantity, setQuantity] = useState(1);
+  const { updateCart } = useCart();
+
+  const handleUpdateBasket = () => {
+    updateCart({ productId: product.productId, quantity });
   };
 
   return (
@@ -59,11 +64,15 @@ export function ProductsItem({ product }: ProductsItemProps) {
       <CardActions>
         {product.stock > 0 ? (
           <>
-            <ProductsQuantitySelect quantity={product.stock} />
+            <ProductsQuantitySelect
+              stock={product.stock}
+              value={quantity}
+              onChange={setQuantity}
+            />
             <Button
               variant="contained"
               color="primary"
-              onClick={handleAddToBasket}
+              onClick={handleUpdateBasket}
             >
               Add to basket
             </Button>
