@@ -35,7 +35,7 @@ export function CartSummary({ cartProducts }: CartSummaryProps) {
         variant="body2"
         mb={3}
       >
-        {`Total price: ${totalPrice}$`}
+        {`Total price: ${totalPrice.toFixed(2)}$`}
       </Typography>
       <Button
         variant="contained"

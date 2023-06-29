@@ -17,11 +17,11 @@ export type CartProductItemProps = {
 
 export function CartProductItem({ cartProduct }: CartProductItemProps) {
   const [quantity, setQuantity] = useState(cartProduct.quantity);
-  const { updateCart } = useCart();
+  const { updateCart, removeCartItem } = useCart();
   const { product } = cartProduct;
 
   const handleDelete = () => {
-    // TODO: implement delete
+    removeCartItem(product.productId);
   };
 
   const handleChangeQuantity = (newQuantity: number) => {

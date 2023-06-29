@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query';
+import { useQueries, useQuery } from '@tanstack/react-query';
 import { getProduct, getProducts } from '../api/products';
 
 export const productsKeys = {
@@ -17,5 +17,14 @@ export function useProduct({ id }: { id: number }) {
   return useQuery({
     queryKey: productsKeys.single(id),
     queryFn: () => getProduct(id),
+  });
+}
+
+export function useSelectedProducts(productIds: number[]) {
+  return useQueries({
+    queries: productIds.map((productId) => ({
+      queryKey: productsKeys.single(productId),
+      queryFn: () => getProduct(productId),
+    })),
   });
 }

@@ -13,26 +13,23 @@ const updateCartItemKey = 'updateCartItem';
 export function useCartUtils() {
   const router = useRouter();
   const { isLoggedIn, getUser } = useAuth();
-  const { data: currentCart } = useCartItems();
+  const { data } = useCartItems();
   const updateCartMutation = useUpdateCart();
   const loggedIn = isLoggedIn();
+  const currentCart = data ?? [];
 
   const getUpdatedCartItems = (newCartItem: ICartItem) => {
-    if (currentCart) {
-      const currentCartItemIndex = currentCart.findIndex(
-        (item) => item.productId === newCartItem.productId
+    const currentCartItemIndex = currentCart.findIndex(
+      (item) => item.productId === newCartItem.productId
+    );
+
+    if (currentCartItemIndex === -1) {
+      return [...currentCart, newCartItem];
+    } else {
+      return currentCart.map((currentItem, index) =>
+        index == currentCartItemIndex ? newCartItem : currentItem
       );
-
-      if (currentCartItemIndex === -1) {
-        return [...currentCart, newCartItem];
-      } else {
-        return currentCart.map((currentItem, index) =>
-          index == currentCartItemIndex ? newCartItem : currentItem
-        );
-      }
     }
-
-    return [newCartItem];
   };
 
   const updateCartRequest = (cartItem: ICartItem) => {
@@ -92,6 +89,7 @@ export function useCartUtils() {
   };
 
   return {
+    cart: currentCart,
     updateCart,
     restoreUpdateCart,
     getCartItemByProductId,

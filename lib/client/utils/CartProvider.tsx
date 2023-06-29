@@ -4,6 +4,7 @@ import { useAuth } from './AuthProvider';
 import { useCartUtils } from './useCartUtils';
 
 export type CartProviderValue = {
+  cart: ICartItem[];
   updateCart: (cartItem: ICartItem) => void;
   getCartItemByProductId: (productId: number) => ICartItem | null;
   removeCartItem: (productId: number) => void;
@@ -14,6 +15,7 @@ const CartContext = createContext<CartProviderValue | null>(null);
 export function CartProvider({ children }: PropsWithChildren) {
   const { isLoggedIn } = useAuth();
   const {
+    cart,
     updateCart,
     restoreUpdateCart,
     getCartItemByProductId,
@@ -27,7 +29,7 @@ export function CartProvider({ children }: PropsWithChildren) {
 
   return (
     <CartContext.Provider
-      value={{ updateCart, getCartItemByProductId, removeCartItem }}
+      value={{ cart, updateCart, getCartItemByProductId, removeCartItem }}
     >
       {children}
     </CartContext.Provider>

@@ -1,6 +1,4 @@
 import Button from '@mui/material/Button';
-import { CartProduct } from '@/lib/client/models/cart';
-import { productsData } from '@/lib/server/data/products';
 import Link from '@/lib/client/components/shared/Link';
 import {
   CartContainer,
@@ -8,19 +6,11 @@ import {
 } from '@/lib/client/components/cart/Cart.styles';
 import { CartSummary } from '@/lib/client/components/cart/CartSummary';
 import { CartProductItem } from '@/lib/client/components/cart/CartProductItem';
-
-const cartProducts: CartProduct[] = [
-  {
-    product: productsData[0],
-    quantity: 1,
-  },
-  {
-    product: productsData[1],
-    quantity: 1,
-  },
-];
+import { useCartData } from '@/lib/client/hooks/useCartData';
 
 export default function Cart() {
+  const { cartProducts } = useCartData();
+
   return (
     <CartContainer>
       <Button
