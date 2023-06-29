@@ -2,6 +2,10 @@ import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import { CartSummaryContainer } from '@/lib/client/components/cart/Cart.styles';
 import { CartProduct } from '../../models/cart';
+import { useCreateOrder } from '../../mutations/orders';
+import { useAuth } from '../../utils/AuthProvider';
+import { IOrderItem } from '@/lib/server/models/orders';
+import { useRouter } from 'next/router';
 
 export type CartSummaryProps = {
   cartProducts: CartProduct[];
@@ -16,10 +20,20 @@ const getTotalPrice = (cartProducts: CartProduct[]) => {
 };
 
 export function CartSummary({ cartProducts }: CartSummaryProps) {
+  const router = useRouter();
+  const { getUser } = useAuth();
+  const createOrderMutation = useCreateOrder();
   const totalPrice = getTotalPrice(cartProducts);
 
   const handleCheckout = () => {
-    // TODO: implement checkout
+    const user = getUser()!;
+    const orderItems: IOrderItem[] = cartProducts.map((cartProduct) => ({
+      quantity: cartProduct.quantity,
+      productId: cartProduct.product.productId,
+      price: cartProduct.product.price,
+    }));
+    createOrderMutation.mutate({ userId: user.userId, items: orderItems });
+    router.push('/');
   };
 
   return (

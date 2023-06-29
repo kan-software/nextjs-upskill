@@ -1,6 +1,6 @@
 import axios from 'axios';
-import { ClientUser, LoginData } from '../models/user';
 import { ICartItem } from '@/lib/server/models/carts';
+import { ClientUser, LoginData } from '../models/user';
 import { UpdateCart } from '../models/cart';
 
 const apiPath = '/api/user';
@@ -26,4 +26,8 @@ export async function getCart(userId: ClientUser['userId']) {
 
 export async function updateCart(data: UpdateCart) {
   return axios.post(`${apiPath}/cart`, data);
+}
+
+export async function removeCart(userId: ClientUser['userId']) {
+  return axios.delete(`${apiPath}/cart`, { params: { userId } });
 }

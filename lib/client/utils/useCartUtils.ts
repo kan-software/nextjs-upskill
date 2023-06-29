@@ -13,10 +13,10 @@ const updateCartItemKey = 'updateCartItem';
 export function useCartUtils() {
   const router = useRouter();
   const { isLoggedIn, getUser } = useAuth();
-  const { data } = useCartItems();
+  const { data, status } = useCartItems();
   const updateCartMutation = useUpdateCart();
   const loggedIn = isLoggedIn();
-  const currentCart = data ?? [];
+  const currentCart = status !== 'error' ? data ?? [] : [];
 
   const getUpdatedCartItems = (newCartItem: ICartItem) => {
     const currentCartItemIndex = currentCart.findIndex(

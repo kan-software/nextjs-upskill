@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/router';
 import { useAuth } from '@/lib/client/utils/AuthProvider';
-import { login, logout, updateCart } from '../api/user';
+import { login, logout, removeCart, updateCart } from '../api/user';
 import { userKeys } from '../queries/user';
 
 export function useLogin() {
@@ -43,6 +43,19 @@ export function useUpdateCart() {
 
   return useMutation({
     mutationFn: updateCart,
+    onSuccess: () => {
+      queryClient.invalidateQueries(userKeys.userCart(user!.userId));
+    },
+  });
+}
+
+export function useRemoveCart() {
+  const queryClient = useQueryClient();
+  const { getUser } = useAuth();
+  const user = getUser();
+
+  return useMutation({
+    mutationFn: () => removeCart(user!.userId),
     onSuccess: () => {
       queryClient.invalidateQueries(userKeys.userCart(user!.userId));
     },
